@@ -4,8 +4,10 @@ import asyncio
 import random as rand
 from responses import *
 import credentials
+import npc
 
 client = discord.Client()
+vat = npc.generator(stats=npc.rpg.NORTEStats)
 #client.Game("Paranoia")
 clones={"DM":0}
 infractions={"DM":0}
@@ -27,6 +29,29 @@ async def on_message(message):
     
     if message.author.id == client.user.id:
         return
+
+#------------------------------------------------
+    if message.content.startswith("!crear"):
+        s=message.content.lower()
+        command,breed=s.split(" ")
+        for kind in npc.rpg.npcType:
+            if breed==kind or breed=="npc":
+                tmp = await message.channel.send("Generando clon")
+                if breed == "npc":
+                    breed="none"
+                vat.generate(breed)
+                statsMessage="Los dados fueron:\n"   
+                for s in vat.usedRolls:
+                    statsMessage+=str(s)+"\n"
+                statsMessage+="Aqui esta tu clon\n"
+                for s in vat.stats:
+                    statsMessage+=s+": "+str(vat.stats[s])+"\n"
+                tmp= await message.channel.send(statsMessage)
+                return
+        tmp = await message.channel.send("No tengo registrado este tipo de clon en mi base de datos")
+        return
+        
+
 #------------------------------------------------
     if message.content.startswith("!acusar"):
         #print(message.mentions[0].discriminator)

@@ -26,18 +26,18 @@ class generator():
         #----------------------------------
         #to be removed
         #----------------------------------
-        i=0
-        print("Your rolls were")
-        for used in self.usedRolls:
-            i+=1
-            print("Dice %d: " % i+str(used))
+        #i=0
+        #print("Your rolls were")
+        #for used in self.usedRolls:
+        #    i+=1
+        #    print("Dice %d: " % i+str(used))
         #----------------------------------
         if npcTypeName!="none":
             stats=self.sortStats(stats,npcType)
         i=0
         for s in self.stats:
             self.stats[s]=stats[i]
-            print(s+" : "+str(self.stats[s]))
+            #print(s+" : "+str(self.stats[s]))
             i+=1
         return
 
