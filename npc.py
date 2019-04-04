@@ -20,7 +20,6 @@ class generator():
    
     def generate(self,npcTypeName="none"):
         #TODO Separate Classes and Races
-        #TODO Modify Stats depending on stats type
         #print("Generating Stats")
         npcType,money=rpg.npcType[npcTypeName]
         stats,self.usedRolls=self.genStats(self.nStats,self.dice)
