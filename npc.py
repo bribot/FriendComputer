@@ -15,13 +15,14 @@ class generator():
         self.dice=dice
         self.usedRolls=[]
         self.stats=stats
+        self.money=0
     
    
     def generate(self,npcTypeName="none"):
         #TODO Separate Classes and Races
         #TODO Modify Stats depending on stats type
         #print("Generating Stats")
-        npcType=rpg.npcType[npcTypeName]
+        npcType,money=rpg.npcType[npcTypeName]
         stats,self.usedRolls=self.genStats(self.nStats,self.dice)
         #----------------------------------
         #to be removed
@@ -39,6 +40,7 @@ class generator():
             self.stats[s]=stats[i]
             #print(s+" : "+str(self.stats[s]))
             i+=1
+        self.money=self.genMoney(money)
         return
 
     def sortStats(self,oStats,npcConf):
@@ -69,15 +71,19 @@ class generator():
                 tmpStats[r]=0
         return newStats
 
-        
+    def genMoney(self,moneyLevel):
+        #TODO dice roller
+        #multiplier=1
+        #addition=0
+        moneyLevel=rpg.NORTEMoney[moneyLevel]
+        number,faces=moneyLevel.split("d")
+        faces,multiplier=faces.split("*")
+        stat=0
+        for i in range(int(number)):
+            stat+=random.randint(1,int(faces))
+        stat*=int(multiplier)
+        return stat
 
-
-    def popMax(self,a):
-        for i in range(len(a)):
-            if a[i]==max(a):
-                b=a.pop(i)
-                break
-        return b,a
 
                 
     def genStats(self,n,d):

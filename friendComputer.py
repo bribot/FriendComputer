@@ -5,15 +5,25 @@ import random as rand
 from responses import *
 import credentials
 import npc
+import atexit
+from computerConf import *
 
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
 #client.Game("Paranoia")
-clones={"DM":0}
-infractions={"DM":0}
+#clones={"DM":0}
+#infractions={"DM":0}
 maxInfractions=3
 
+def turningOff():
+    f = open("computerConf.py","w+")
+    f.write("clones=")
+    f.write(str(clones))
+    f.write("\n")
+    f.write("infractions=")
+    f.write(str(infractions))
 
+atexit.register(turningOff)
 
 @client.event
 async def on_ready():
@@ -46,14 +56,15 @@ async def on_message(message):
                 statsMessage+="Aqui esta tu clon\n"
                 for s in vat.stats:
                     statsMessage+=s+": "+str(vat.stats[s])+"\n"
-                tmp= await message.channel.send(statsMessage)
+                tmp = await message.channel.send(statsMessage)
+                tmp = await message.channel.send("Tiene %d gp" % vat.money)
                 return
         tmp = await message.channel.send("No tengo registrado este tipo de clon en mi base de datos")
         return
         
 
 #------------------------------------------------
-    if message.content.startswith("!acusar"):
+    if "!acusar" in message.content:
         #print(message.mentions[0].discriminator)
         pc1 = str(message.author)
         for member in message.mentions:
@@ -86,7 +97,7 @@ async def on_message(message):
 
 
 #-----------------------------------------------
-    if message.content.startswith("Amiga Computadora"):
+    if message.content.startswith("Amiga computadora"):
         tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
 
 #-----------------------------------------------
@@ -96,9 +107,7 @@ async def on_message(message):
         print("------------------------")
         print("Name:Infractions:Clones")
         
-
-        tmp = await message.channel.send("------------------------")
-        tmp = await message.channel.send("Name:Infractions:Clones")
+        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
         for m in clones:
             print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
             tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
@@ -112,9 +121,10 @@ async def on_message(message):
             tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
             print(res+" {0.name}".format(message.author))
             print(str(message.author))
-            if res != "regla":
+            if "regla" not in res:
                 return
             tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+
                 
 def kill(pc):
     return awardInfraction(pc,maxInfractions)
@@ -133,7 +143,5 @@ def awardInfraction(pc,n):
     else:
         return "tienes %d infraccion(es)" % infractions[pc]
 
-
-    
 
 client.run(credentials.botToken) 

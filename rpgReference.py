@@ -3,36 +3,67 @@
 
 # Primer numero es favorecedor en posición y segundo es modificador
 # 0 significa no favorecedor
+# TODO Remake the class system 
+
+adalid=[[1,0],[2,0],[0,0],[0,0],[0,0],[3,0]]
+ranger=[[2,0],[1,0],[3,0],[0,0],[4,0],[0,0]]
 none=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 villager=[[0,-2],[0,-2],[0,-2],[0,-2],[0,-2],[0,-2]]
 wizard=[[6,0],[0,0],[0,0],[1,0],[0,0],[0,0]]
-barbarian=[[1,0],[2,0],[0,0],[0,0],[0,0],[0,0]]
-rogue=[[0,0],[0,0],[1,0],[0,0],[0,0],[0,0]]
-bard=[[0,0],[0,0],[0,0],[0,0],[0,0],[1,0]]
-sorcerer=[[0,0],[0,0],[0,0],[1,0],[0,0],[1,0]]
+barbarian=[[1,0],[3,0],[2,0],[0,0],[4,0],[0,0]]
+rogue=[[0,0],[1,0],[0,0],[0,0],[0,0],[0,0]]
+bard=[[0,0],[2,0],[0,0],[3,0],[0,0],[1,0]]
+sorcerer=[[0,0],[0,0],[0,0],[2,0],[0,0],[1,0]]
 fighter=[[1,0],[2,0],[3,0],[0,0],[0,0],[0,0]]
-druid=[[0,0],[0,0],[0,0],[0,0],[1,0],[0,0]]
-ranger=[[0,0],[0,0],[0,0],[1,0],[0,0],[0,0]]
-paladin=[[1,0],[0,0],[0,0],[1,0],[0,0],[2,0]]
+druid=[[0,0],[2,0],[2,0],[0,0],[1,0],[2,0]]
+paladin=[[0,0],[6,0],[0,0],[5,0],[0,0],[1,0]]
+monk=[[0,0],[0,0],[0,0],[5,0],[1,0],[6,0]]
+
+alquimist=[[0,0],[2,0],[0,0],[1,0],[0,0],[0,0]]
+artificier=[[1,0],[0,0],[0,0],[1,0],[0,0],[2,0]]
+summoner=[[0,0],[0,0],[0,0],[2,0],[0,0],[1,0]]
+witch=[[0,0],[0,0],[0,0],[1,0],[0,0],[2,0]]
+cleric=[[0,0],[0,0],[0,0],[3,0],[1,0],[2,0]]
+inquisitor=[[0,0],[0,0],[0,0],[0,0],[1,0],[0,0]]
+magus=[[2,0],[0,0],[0,0],[1,0],[0,0],[0,0]]
+
+cat=[[0,0],[1,0],[0,0],[2,0],[3,0],[0,0]]
+
+NORTEMoney={
+        "very high":"5d6*10",
+        "high":"4d6*10",
+        "medium":"3d6*10",
+        "low":"2d6*10",
+        "very low":"1d6*10"
+        }
 
 npcType={
-        "none":none,
-        "aldeano":villager,
-        "mago":wizard,
-        "barbaro":barbarian,
-        "ladron":rogue,
-        "bardo":bard,
-        "sorcerer":sorcerer,
-        "guerrero":fighter,
-        "druida":druid,
-        "ranger":ranger,
-        "paladin":paladin
+        "none":[none,"medium"],
+        "aldeano":[villager,"very low"],
+        "adalid":[adalid,"very high"],
+        "alquimista":[alquimist,"medium"],
+        "mago":[wizard,"low"],
+        "magus":[magus,"high"],
+        "barbaro":[barbarian,"medium"],
+        "bruja":[witch,"medium"],
+        "clerigo":[cleric,"high"],
+        "ladron":[rogue,"high"],
+        "bardo":[bard,"medium"],
+        "hechicero":[sorcerer,"low"],
+        "inquisidor":[inquisitor,"high"],
+        "invocador":[summoner,"low"],
+        "guerrero":[fighter,"very high"],
+        "druida":[druid,"low"],
+        "ranger":[ranger,"very high"],
+        "paladin":[paladin,"very high"],
+        "monje":[monk,"very low"],
+        "gato":[cat,"very high"]
         }
 
 DNDStats={
         "STR":0,
-        "CON":0,
         "DEX":0,
+        "CON":0,
         "INT":0,
         "WIS":0,
         "CHA":0
@@ -40,8 +71,8 @@ DNDStats={
 
 NORTEStats={
         "Fue":0,
+        "Dex":0,
         "Con":0,
-        "Des":0,
         "Int":0,
         "Sab":0,
         "Car":0
