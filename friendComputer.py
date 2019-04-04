@@ -7,6 +7,7 @@ import credentials
 import npc
 import atexit
 from computerConf import *
+import time
 
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
@@ -67,10 +68,10 @@ async def on_message(message):
     if "!acusar" in message.content:
         #print(message.mentions[0].discriminator)
         pc1 = str(message.author)
-        if "Amiga Computadora" in pc1:
+        if "Amiga Computadora" in str(message.mentions):
             tmp = await message.channel.send("Acusar a Amiga Computadora se considera un acto de traición!")
             for i in range(3):
-                tmp = await message.channel.send("{0.name} ".format(message.author) + kill(str(message.author),1))
+                tmp = await message.channel.send("{0.name} ".format(message.author) + kill(str(message.author)))
                 time.sleep(2)
             return
 
@@ -90,10 +91,10 @@ async def on_message(message):
 #----------------------------------------------
     if message.content.startswith("!kill"):
         pc1 = str(message.author)
-        if "Amiga Computadora" in pc1:
+        if "Amiga Computadora" in str(message.mentions):
             tmp = await message.channel.send("Tratar de matar a Amiga Computadora se considera un acto de traición!")
             for i in range(5):
-                tmp = await message.channel.send("{0.name} ".format(message.author) + kill(str(message.author),1))
+                tmp = await message.channel.send("{0.name} ".format(message.author) + kill(str(message.author)))
                 time.sleep(2)
             return
         for member in message.mentions:

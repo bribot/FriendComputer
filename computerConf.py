@@ -1,2 +1,2 @@
-clones={'DM': 0, 'bribot#3950': 1, 'FredBoat♪♪#7284': 0, 'Dice Maiden#7161': 0}
-infractions={'DM': 0, 'bribot#3950': 2, 'FredBoat♪♪#7284': 1, 'Dice Maiden#7161': 1}
+clones={'DM': 0, 'bribot#3950': 3, 'FredBoat♪♪#7284': 0, 'Dice Maiden#7161': 0, 'Laudine#7237': 3, 'Amiga Computadora#2522': 1}
+infractions={'DM': 0, 'bribot#3950': 0, 'FredBoat♪♪#7284': 1, 'Dice Maiden#7161': 1, 'Laudine#7237': 0, 'Amiga Computadora#2522': 2}
