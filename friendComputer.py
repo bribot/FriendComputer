@@ -91,6 +91,8 @@ async def on_message(message):
 #----------------------------------------------
     if message.content.startswith("!kill"):
         pc1 = str(message.author)
+        if pc1 in str(message.mentions):
+            tmp = await message.channel.send("{0.name}".format(message.author)+" La felicidad es mandatoria y el asesinato propio no es permitido. Toma una pildora de la felicidad :pill:")
         if "Amiga Computadora" in str(message.mentions):
             tmp = await message.channel.send("Tratar de matar a Amiga Computadora se considera un acto de traición!")
             for i in range(5):
