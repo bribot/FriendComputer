@@ -136,8 +136,8 @@ async def on_message(message):
     for res in respond:
         if res in message.content.lower():
             tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
-            print(res+" {0.name}".format(message.author))
-            print(str(message.author))
+            #print(res+" {0.name}".format(message.author))
+            #print(str(message.author))
             if "regla" not in res:
                 return
             tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
