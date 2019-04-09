@@ -29,6 +29,21 @@ magus=[[2,0],[0,0],[0,0],[1,0],[0,0],[0,0]]
 
 cat=[[0,0],[1,0],[0,0],[2,0],[3,0],[0,0]]
 
+NORTERaces={
+        "1-20":"humano (cardo)",
+        "21-35":"humano (rakibi)",
+        "36-40":"humano (ocitano)",
+        "41-55":"enano (eskero)",
+        "56-65":"elfo (norno)",
+        "66-75":"halfling",
+        "76-85":"gnomos",
+        "86-95":"elfo (sitha)",
+        "99-100":"changeling"
+        }
+randomTables={
+        "races":NORTERaces
+        }
+
 NORTEMoney={
         "very high":"5d6*10",
         "high":"4d6*10",

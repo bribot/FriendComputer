@@ -109,6 +109,18 @@ class generator():
         #print("Status: %d" % stat)
         return stat,roll
 
+    def randomTable(self,table="races",minDice=1,maxDice=100):
+        t = rpg.randomTables[table]
+        res = "none"
+        v = random.randint(minDice,maxDice)
+        res="Dice: %d\n" % v
+        for case in t:
+            mi,ma=case.split("-")
+            if v>=int(mi) and v<=int(ma):
+                res+=t[case]
+                break
+        return res
+
 class npc():
 
     def __init__(self,name,hp):

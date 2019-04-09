@@ -45,6 +45,9 @@ async def on_message(message):
     if message.content.startswith("!crear"):
         s=message.content.lower()
         command,breed=s.split(" ")
+        if breed=="raza":
+            tmp = await message.channel.send("Creando raza aleatoria...\n" +vat.randomTable())
+            return
         for kind in npc.rpg.npcType:
             if breed==kind or breed=="npc":
                 tmp = await message.channel.send("Generando clon")
@@ -91,8 +94,12 @@ async def on_message(message):
 #----------------------------------------------
     if message.content.startswith("!kill"):
         pc1 = str(message.author)
-        if pc1 in str(message.mentions):
+        print(pc1)
+        print(str(message.mentions))
+        
+        if pc1.split("#")[0] in str(message.mentions):
             tmp = await message.channel.send("{0.name}".format(message.author)+" La felicidad es mandatoria y el asesinato propio no es permitido. Toma una pildora de la felicidad :pill:")
+            return
         if "Amiga Computadora" in str(message.mentions):
             tmp = await message.channel.send("Tratar de matar a Amiga Computadora se considera un acto de traición!")
             for i in range(5):
@@ -118,20 +125,20 @@ async def on_message(message):
         tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
 
 #-----------------------------------------------
-    if message.content.startswith("Ultravioleta"):
-        if str(message.author) != "bribot#3950":
-            return
-        print("------------------------")
-        print("Name:Infractions:Clones")
-        
-        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
-        for m in clones:
-            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-        tmp = await message.channel.send("------------------------")
-        print("------------------------")
-
-        return
+#    if message.content.startswith("Ultravioleta"):
+#        if str(message.author) != "bribot#3950":
+#            return
+#        print("------------------------")
+#        print("Name:Infractions:Clones")
+#        
+#        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
+#        for m in clones:
+#            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+#            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+#        tmp = await message.channel.send("------------------------")
+#        print("------------------------")
+#
+#        return
 #-----------------------------------------------
     for res in respond:
         if res in message.content.lower():
