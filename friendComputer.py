@@ -94,8 +94,8 @@ async def on_message(message):
 #----------------------------------------------
     if message.content.startswith("!kill"):
         pc1 = str(message.author)
-        print(pc1)
-        print(str(message.mentions))
+        #print(pc1)
+        #print(str(message.mentions))
         
         if pc1.split("#")[0] in str(message.mentions):
             tmp = await message.channel.send("{0.name}".format(message.author)+" La felicidad es mandatoria y el asesinato propio no es permitido. Toma una pildora de la felicidad :pill:")
