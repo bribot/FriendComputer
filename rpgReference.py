@@ -40,6 +40,12 @@ NORTERaces={
         "86-95":"elfo (sitha)",
         "99-100":"changeling"
         }
+
+testTable={
+        "1-50":"Yes",
+        "59-100":"No"
+        }
+
 randomTables={
         "races":NORTERaces
         }
