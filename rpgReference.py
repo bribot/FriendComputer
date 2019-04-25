@@ -30,15 +30,16 @@ magus=[[2,0],[0,0],[0,0],[1,0],[0,0],[0,0]]
 cat=[[0,0],[1,0],[0,0],[2,0],[3,0],[0,0]]
 
 NORTERaces={
-        "1-20":"humano (cardo)",
-        "21-35":"humano (rakibi)",
-        "36-40":"humano (ocitano)",
-        "41-55":"enano (eskero)",
-        "56-65":"elfo (norno)",
-        "66-75":"halfling",
-        "76-85":"gnomos",
-        "86-95":"elfo (sitha)",
-        "99-100":"changeling"
+        "1-18":"Humano (cardo)",
+        "19-31":"Humano (rakibi)",
+        "32-35":"Humano (ocitano)",
+        "36-40":"Goblin",
+        "41-55":"Enano (eskero)",
+        "56-65":"Elfo (norno)",
+        "66-75":"Halfling",
+        "76-85":"Gnomos",
+        "86-95":"Elfo (sitha)",
+        "99-100":"Changeling"
         }
 
 testTable={
