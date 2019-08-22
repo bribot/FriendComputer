@@ -61,7 +61,7 @@ async def on_message(message):
                 for s in vat.stats:
                     statsMessage+=s+": "+str(vat.stats[s])+"\n"
                 tmp = await message.channel.send(statsMessage)
-                tmp = await message.channel.send("Tiene %d gp" % vat.money)
+                #tmp = await message.channel.send("Tiene %d gp" % vat.money)
                 return
         tmp = await message.channel.send("No tengo registrado este tipo de clon en mi base de datos")
         return
