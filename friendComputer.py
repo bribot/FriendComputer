@@ -8,13 +8,26 @@ import npc
 import atexit
 from computerConf import *
 import time
+import dnd5Gen as gen
 
+# TODO: USE BOT API
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
+vatXP = gen.generator()
+convos=[]
 #client.Game("Paranoia")
 #clones={"DM":0}
 #infractions={"DM":0}
 maxInfractions=3
+
+
+class convo():
+    def __init__(self,author,message,onGoing):
+        return    
+    
+    def getResponse():
+        return "OwO"
+        
 
 def turningOff():
     f = open("computerConf.py","w+")
@@ -31,6 +44,9 @@ async def on_ready():
         print('Logged in as')
         print(client.user.name)
         print(client.user.id)
+        
+        for i in client.guilds:
+            print(i)
         print('------')
         await client.change_presence(activity=discord.Game(name="Paranoia"))
 
@@ -40,7 +56,49 @@ async def on_message(message):
     
     if message.author.id == client.user.id:
         return
+    
+    if message.content.startswith("hewwo"):
+        print(message.guild)
+        print(message.channel)
+        print(message.author)
+        print(message.author.dm_channel)
+        if message.author.dm_channel == None:
+            await message.author.create_dm()
+            print(message.author.dm_channel)
+        await message.author.dm_channel.send("hewwo")
+        print("------------------------")
+        
 
+# NEW GENERATOR
+
+        
+        
+    if message.content.startswith("!razas"):
+        m = ""
+        for r in vatXP.races:
+            m += r +"\n"
+        tmp = await message.channel.send(m)
+        
+    if message.content.startswith("!clases"):
+        m = ""
+        for r in vatXP.classes:
+            m += r +"\n"
+        tmp = await message.channel.send(m)
+        
+    if message.content.startswith("!trasfondos"):
+        m = ""
+        for r in vatXP.backgrounds:
+            m += r +"\n"
+        tmp = await message.channel.send(m)
+    
+    if message.content.startswith("!XP"):
+        m = ""
+#        s=message.content.lower()
+#        command,breed  = s.split()
+#        r,c,b = breed.split(",")
+        m = vatXP.generate()
+        tmp = await message.channel.send(m)
+        
 #------------------------------------------------
     if message.content.startswith("!crear"):
         s=message.content.lower()
