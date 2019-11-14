@@ -93,10 +93,13 @@ async def on_message(message):
     
     if message.content.startswith("!XP"):
         m = ""
+        
+        mess=message.content[4:]
+        print(mess)
 #        s=message.content.lower()
 #        command,breed  = s.split()
 #        r,c,b = breed.split(",")
-        m = vatXP.generate()
+        m = vatXP.interface(mess)
         tmp = await message.channel.send(m)
         
 #------------------------------------------------
