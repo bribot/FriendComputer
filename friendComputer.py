@@ -9,13 +9,15 @@ import atexit
 from computerConf import *
 import time
 import dnd5Gen as gen
+import logging
 
 # TODO: USE BOT API
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
 vatXP = gen.generator()
 convos=[]
-#log = open("log "+time.ctime,"w+")
+LOG_FILENAME = time.ctime()+'.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 #client.Game("Paranoia")
 #clones={"DM":0}
 #infractions={"DM":0}
@@ -42,14 +44,13 @@ atexit.register(turningOff)
 
 @client.event
 async def on_ready():
-    print(time.ctime())
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
+    logging.info('Logged in as')
+    logging.info(client.user.name)
+    logging.info(client.user.id)
     
     for i in client.guilds:
-        print(i)
-    print('------')
+        logging.info(i)
+#    print('------')
     await client.change_presence(activity=discord.Game(name="Paranoia"))
 
 
@@ -60,16 +61,15 @@ async def on_message(message):
         return
     
     if message.content.startswith("hewwo"):
-        print(time.ctime())
-        print(message.guild)
-        print(message.channel)
-        print(message.author)
-        print(message.author.dm_channel)
+        logging.info(message.guild)
+        logging.info(message.channel)
+        logging.info(message.author)
+        logging.info(message.author.dm_channel)
         if message.author.dm_channel == None:
             await message.author.create_dm()
-            print(message.author.dm_channel)
+            logging.info(message.author.dm_channel)
         await message.author.dm_channel.send("hewwo")
-        print("------------------------")
+#        print("------------------------")
         
 
 # NEW GENERATOR
@@ -95,18 +95,13 @@ async def on_message(message):
         tmp = await message.channel.send(m)
     
     if message.content.startswith("!XP"):
-        m = ""
-        print("---------------------------------------------------")
-        print(time.ctime())
-        print(message.content)
+        m = ""     
         mess=message.content[4:]
-        print(mess)
-#        s=message.content.lower()
-#        command,breed  = s.split()
-#        r,c,b = breed.split(",")
         m = vatXP.interface(mess)
-        print(m)
+#        print(m)
         if m == "error":
+            logging.debug("----------------------------HERE------------------------------")
+            logging.debug(message.content)
             tmp = await message.channel.send(errorMessage())
         else:
             tmp = await message.channel.send(m)
