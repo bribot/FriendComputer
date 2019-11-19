@@ -24,6 +24,15 @@ def testScript():
         for c in vat.classes:
             for b in vat.backgrounds:
                 vat.generate(race=r,cclass=c,bg=b)
+def testClasses():
+    vat = generator()
+    for r in vat.classes:
+        c=vat.listInfo(r)[0]
+        c=vat.getClass(c)
+        print("--------------------")
+        print(c["name"])
+        print(c["proficiency"])
+        print(c["quickbuild"])
 def testType():
     vat=generator()
     for r in vat.races:
@@ -101,16 +110,6 @@ class generator():
             else:
                 print(name + " banned!")
     
-    # ---------------------------------------------------
-    # TODO: EITHER DELETE OR MAKE IT RIGHT
-#    def genCharacter(self,race="",cclass="",lvl=1):
-#        if race=="":
-#            race=self.races[randint(0,len(self.races)-1)]
-#        if cclass=="":
-#            cclass=self.classes[randint(0,len(self.classes)-1)]
-#        print("Behold the %s %s!" % (race,cclass))
-    # ---------------------------------------------------
-    
     def interface(self,search):
         """
         Returns: Str, code
@@ -127,6 +126,7 @@ class generator():
             for s in search.split(","):
                 if s[0]==" ":
                     s=s[1:]
+                    
                 code=000
                 ty = self.getType(s)
                 if ty == 0:
@@ -150,8 +150,10 @@ class generator():
                     info=self.listInfo(s,2)
                     b=info[random.randint(0,len(info)-1)]
                     code+=200
-#            else:
-#                print("Something went wrong")
+                else:
+                    print("Something went wrong")
+                    return "error"
+                
 #                code=333
         #print("r: %s, c: %s, b: %s" % (r,c,b))
         res = self.generate(race=r,cclass=c,bg=b)
@@ -176,11 +178,13 @@ class generator():
         elif search in self.backgrounds:
             ty = 2
         else:
-            search=self.listInfo(search)[0]
-            search = search.lower()
+            search=self.listInfo(search)
+            if len(search)==0:
+                return 4
+            search = search[0].lower()
 #            print(search)
             if search in self.races:
-                print("hey")
+#                print("hey")
                 ty = 10
             elif search in self.classes:
                 ty = 11
@@ -222,7 +226,9 @@ class generator():
         result={"name":cclass,
                 "hd":"",
                 "proficiency":"",
-                "spellAbility":""}
+                "quickbuild":"",
+                "spellAbility":"",
+                "startingEquipment":""}
         if cclass=="":
             print("no valid class")
             return result
@@ -244,10 +250,20 @@ class generator():
         except:
             result["spellAbility"]=""
             
+        item=node.getElementsByTagName("quickbuild")[0]
+        result["quickbuild"]=item.firstChild.data
+            
         item=node.getElementsByTagName("trait")
         for i in item:
             result[i.getElementsByTagName("name")[0].firstChild.data]=i.getElementsByTagName("text")[0].firstChild.data
-        
+      #-------------------------------------------------      
+        item=node.getElementsByTagName("feature")
+        for i in item:
+            for n in i.childNodes:
+                if n.nodeType==1:
+                    if n.tagName == "name" and n.firstChild.data == "Starting Equipment":
+                        result["startingEquipment"]=self.findTextNodes(i.childNodes)
+    #-------------------------------------------------
         return result
     
     def getBackground(self,bg):
@@ -277,17 +293,23 @@ class generator():
         return result
     
     def findTextNodes(self,nodeList):
+        result=""
         noprint=["text","name"]
         for subnode in nodeList:
             if subnode.nodeType == subnode.ELEMENT_NODE:
                 if subnode.tagName not in noprint:
                     print(subnode.tagName)
                 # call function again to get children
-                self.findTextNodes(subnode.childNodes)
+                result+=self.findTextNodes(subnode.childNodes)+"\n"
             elif subnode.nodeType == subnode.TEXT_NODE:
                 if("\t" not in subnode.data):
                     #print("text node: ")
-                    print(subnode.data)
+#                    print(subnode.data)
+                    result+=subnode.data
+#        print(result)
+        return result
+                    
+                    
                     
     #TODO: RETURN INFO AS A STR 
     def searchInfo(self,search):
@@ -315,7 +337,7 @@ class generator():
             name=name.lower()
             if name.startswith(search):
                 print("----------------------------------")
-                self.findTextNodes(item.childNodes)
+                print(self.findTextNodes(item.childNodes))
         return
     
     def listInfo(self,search,searchType=4):
@@ -356,6 +378,7 @@ class generator():
         return result
         
     # TODO: OPTIONS TO ROLL
+    # TODO: REROLL ON LOW STATS
     def genStats(self,diceS=6,diceR=4,diceK=3):
         stats=[]
         rolls=[]
@@ -375,17 +398,33 @@ class generator():
             
         return stats,rolls
     
+    # TODO: use remaining stats
     def sortStats(self,stats,cclass):
         proficiency=[]
         bestStats=[]
+#        otherStats=[]
         pStats = self.pStats
-        for p in cclass["proficiency"].split():
+        
+        for p in cclass["quickbuild"].split(","):
+#            print("-------------")
+#            print(p)
+#            print("-------------")
+            if len(p.split("or"))>1:
+                p=p.split("or")[random.randint(0,len(p.split("or"))-1)]
+#                print("-------------")
+#                print(p)
+#                print("-------------")
+            if p[0]==" ":
+                p=p[1:]
             proficiency.append(p[0:3].lower())
+#        print(proficiency)
         stats.sort()
+#        print(stats)
         for p in proficiency:
             bestStats.append(stats.pop(-1))
+#            print(bestStats)
             
-        random.shuffle(bestStats)
+#        random.shuffle(bestStats)
         random.shuffle(stats)
         
         for stat in pStats:
@@ -458,7 +497,6 @@ class generator():
         return pDC
         
         
-    # TODO: USER INTERFACE
     # TODO: ADD CLASSS EQUIPMENT
     # TODO: ADD TRINKET
     # TODO: SAVE CHARACTERS
@@ -470,7 +508,7 @@ class generator():
         if race.lower()  in self.races:
             raceT = self.listInfo(race,TYPE_RACE)
             for r in raceT:
-                if r.lower().startswith(race.lower()):
+                if r.lower() == race.lower():
                     race = r
         elif race == "":
             race = self.races[random.randint(0,len(self.races)-1)]
@@ -526,7 +564,7 @@ class generator():
         for s in pStats:
             result+=("\n"+s + ":"+ str(pStats[s][0])+"("+str(pStats[s][-1])+ ")")
             
-        result+=("Racial: " + pRace["ability"])
+        result+=("\nRacial: " + pRace["ability"])
         result+=("\n"+"HP: "+str(pHP))
         result+=("\n"+"Proficiency: "+str(pProficiency))
         result+=("\n"+pClass["proficiency"])
@@ -534,7 +572,8 @@ class generator():
         result+=("\n"+"Spellcasting Ability: "+str(pClass["spellAbility"]))
         result+=("\n"+"DC: "+str(pDC))
         result+=("\n"+"Speed: "+str(pSpeed))
-        result+=("\n"+"Equipment: "+pBg["Equipment"])
+        result+=("\n"+"Class Equipment:"+"\n"+pClass["startingEquipment"]+"\n"
+                 +"\nBackground Equipment:\n"+pBg["Equipment"])
         #------------------------------------------------------------------
         return result
         
