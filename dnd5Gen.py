@@ -503,7 +503,7 @@ class generator():
     def getDC(self,pClass,pStats,proficiency):
         pDC=pClass["spellAbility"]
         if pDC == "":
-            print("barbarian?")
+            #print("barbarian?")
             return
         else:
             pDC=pDC[0:3].upper()    
