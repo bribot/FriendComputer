@@ -14,10 +14,13 @@ import logging
 # TODO: USE BOT API
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
-vatXP = gen.generator()
+banC = ['artificer','mystic (ua)','ranger (revised)']
+banR = ['aarakocra','aasimar (fallen)','aasimar (scourge)','bugbear','dwarf (duergar)','elf (eladrin)','firbolg','genasi (air)','genasi (earth)','genasi (fire)','genasi (water)','gnome (deep)','gnome (rock)','goliath','half-elf (aquatic elf descent)','half-elf (drow descent)','half-elf (moon elf or sun elf descent)','half-elf (wood elf descent)','halfling (ghostwise)','halfling (stout)','hobgoblin','kenku','kobold','lizardfolk','shifter (razorclaw)','shifter (wildhunt)','triton','yuan-ti pureblood']
+banb = ['caravan specialist','city watch','clan crafter','cloistered scholar','cormanthor','refugee','courtier','earthspur miner','faction agent','far traveler','gate urchin','harborfolk','haunted one','hillsfar merchant','hillsfar smuggler','inheritor','investigator','knight of the order','mercenary veteran','mulmaster aristocrat','phlan refugee','secret identity','shade fanatic','trade sherrif','urban bounty hunter','uthgardt tribe member','waterdhavian noble']
+vatXP = gen.generator(banclasses = banC, banraces = banR,banbg = banb)
 convos=[]
 LOG_FILENAME = time.ctime()+'.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+# logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 #client.Game("Paranoia")
 #clones={"DM":0}
 #infractions={"DM":0}
@@ -71,10 +74,7 @@ async def on_message(message):
         await message.author.dm_channel.send("hewwo")
 #        print("------------------------")
         
-
 # NEW GENERATOR
-
-        
         
     if message.content.startswith("!razas"):
         m = ""
@@ -106,6 +106,20 @@ async def on_message(message):
         else:
             tmp = await message.channel.send(m)
         
+#------------------------------------------------
+    if message.content.startswith("!ayuda"):
+        tmp = await message.channel.send(
+            '''Lista de comandos de Amiga Computadora: 
+            \n!acusar @nombre: Acusar a alguien de traicion con amiga computadora
+            \n!kill @nombre: Intento de traicion a alguien
+            \n!XP class, race, background: Crea un personaje utilizando la base de datos de 5e
+            \n!razas: Muestra la lista de razas
+            \n!clases: Muestra la lista de clases
+            \n!trasfondos: Muestra la lista de trasfondos
+            \n!crear clase: Crea los stats de una clase (deprecado)
+            '''
+            )
+
 #------------------------------------------------
     if message.content.startswith("!crear"):
         s=message.content.lower()

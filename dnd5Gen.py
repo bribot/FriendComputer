@@ -88,7 +88,8 @@ class generator():
                 name=name.lower()
                 self.races.append(name)
             else:
-                print(name + " banned!")
+                # print(name + " banned!")
+                pass
             
         items = self.mydoc.getElementsByTagName('class')
         for item in items:
@@ -98,7 +99,8 @@ class generator():
                 name=name.lower()
                 self.classes.append(name)
             else:
-                print(name + " banned!")
+                # print(name + " banned!")
+                pass
             
         items = self.mydoc.getElementsByTagName('background')
         for item in items:
@@ -108,7 +110,8 @@ class generator():
                 name=name.lower()
                 self.backgrounds.append(name)
             else:
-                print(name + " banned!")
+                # print(name + " banned!")
+                pass
     
     def interface(self,search):
         """
@@ -514,7 +517,6 @@ class generator():
         return pDC
         
         
-    # TODO: ADD CLASSS EQUIPMENT
     # TODO: ADD TRINKET
     # TODO: SAVE CHARACTERS
     # race should be a valid race
@@ -584,13 +586,16 @@ class generator():
         result+=("\nRacial: " + pRace["ability"])
         result+=("\n"+"HP: "+str(pHP))
         result+=("\n"+"Proficiency: "+str(pProficiency))
-        result+=("\n"+pClass["proficiency"])
-        result+=("\n"+pBg["proficiency"])
+        # result+=("\n"+pClass["proficiency"])
+        # result+=("\n"+pBg["proficiency"])
         result+=("\n"+"Spellcasting Ability: "+str(pClass["spellAbility"]))
         result+=("\n"+"DC: "+str(pDC))
         result+=("\n"+"Speed: "+str(pSpeed))
-        result+=("\n"+"Class Equipment:"+"\n"+pClass["startingEquipment"]+"\n"
-                 +"\nBackground Equipment:\n"+pBg["Equipment"])
+        result+=("\n"+"Dice: ")
+        for die in opStats[1]:
+            result+=("\n" + str(die) + " = " + str(die[0] + die[1] + die[2]))
+        # result+=("\n"+"Class Equipment:"+"\n"+pClass["startingEquipment"]+"\n"
+                 # +"\nBackground Equipment:\n"+pBg["Equipment"])
         #------------------------------------------------------------------
         return result
         

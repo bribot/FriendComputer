@@ -5397,7 +5397,7 @@ If an Alchemical Formula option requires a saving throw, the DC is 8 + your prof
 		<ability> </ability>
 		<trait>
 			<name>Ability Score Increase</name>
-			<text>Two different ability scores of your choice increase by 1.</text>
+			<text>.</text>
 		</trait>
 		<trait>
 			<name>Skills</name>
