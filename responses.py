@@ -13,7 +13,8 @@ death=(
 "Una gran barra de metal sale del techo y te aplasta",
 "Rocas caen sobre ti",
 "Se abre una compuerta a tus pies y caes en las fauces de un monstruo gigante",
-"Has sido comido por el Grue"
+"Has sido comido por el Grue",
+"Tu cabeza se expande hasta ocupar todo el cuarto, unos momentos despues explota"
 )
 
 live=(
@@ -23,7 +24,8 @@ live=(
 "una luz aparece de la nada ¡tu nuevo clon!!",
 "tu nuevo clon siempre estuvo aqui listo para sustituirte.",
 "tu nuevo clon salió defectuoso, tiene 1d10 dedos en cada mano.",
-"aqui esta tu nuevo clon, creo que esta defectuoso... ¿Así siempre fue tu cara?"
+"aqui esta tu nuevo clon, creo que esta defectuoso... ¿Así siempre fue tu cara?",
+"Tu nuevo clon sale de tu antiguo cuerpo"
 )
 
 

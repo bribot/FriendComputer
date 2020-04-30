@@ -10,6 +10,7 @@ from computerConf import *
 import time
 import dnd5Gen as gen
 import logging
+import randomTables
 
 # TODO: USE BOT API
 client = discord.Client()
@@ -119,9 +120,20 @@ async def on_message(message):
             \n!crear clase: Crea los stats de una clase (deprecado)
             '''
             )
-
+        return
 #------------------------------------------------
-    if message.content.startswith("!crear"):
+    if message.content.startswith("!tabla "):
+        s=message.content.lower()
+        if len(s.split(' '))>2:
+            tmp = await message.channel.send("Solo puedes tirar en una tabla a la vez!")
+            return
+        elif len(s.split(' ')) == 1:
+            tmp = await message.channel.send("Necesitas darme una tabla, hasta el soylent verde lo sabe")
+            return
+        command,name=s.split(" ")
+        tmp = await message.channel.send(randomTables.rollTable(name))
+#------------------------------------------------
+    if message.content.startswith("!crear "):
         s=message.content.lower()
         command,breed=s.split(" ")
         if breed=="raza":
