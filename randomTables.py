@@ -27,7 +27,7 @@ def rollTable(name):
     return result
 
 def loadTable(file):
-    with open(path+file+'.csv') as infile:
+    with open(path+file+'.csv',encoding="ISO-8859-1") as infile:
         reader = csv.reader(infile)
         table = [rows[0] for rows in reader]
     return table
