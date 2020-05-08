@@ -13,8 +13,8 @@ path="./RandomTables/"
 
 index = {}
 
-def main():
-    print("code me daddy OwO")
+# def main():
+#     print("code me daddy OwO")
             
             
 def rollTable(name):
@@ -44,8 +44,8 @@ def checkTable(name):
     else:
         return 0
             
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
     
 # juergas =( "Has perdido un diente, tira 1d10: 1-3 una muela, 4-6 un premolar, 7-8 un incisivo, 9-10 una paleta",
 # "Has perdido un dedo, tira 1d10: 1-3 meñique, 4-6 anular, 7-8 corazón, 9 indice, 10 pulgar",
