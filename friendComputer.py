@@ -95,9 +95,9 @@ async def on_message(message):
             m += r +"\n"
         tmp = await message.channel.send(m)
     
-    if message.content.startswith("!XP"):
+    if message.content.startswith("!crear "):
         m = ""     
-        mess=message.content[4:]
+        mess=message.content[7:]
         m = vatXP.interface(mess)
 #        print(m)
         if m == "error":
@@ -113,11 +113,12 @@ async def on_message(message):
             '''Lista de comandos de Amiga Computadora: 
             \n!acusar @nombre: Acusar a alguien de traicion con amiga computadora
             \n!kill @nombre: Intento de traicion a alguien
-            \n!XP class, race, background: Crea un personaje utilizando la base de datos de 5e
+            \n!crear class, race, background: Crea un personaje utilizando la base de datos de 5e
             \n!razas: Muestra la lista de razas
             \n!clases: Muestra la lista de clases
             \n!trasfondos: Muestra la lista de trasfondos
-            \n!crear clase: Crea los stats de una clase (deprecado)
+            \n!soloStats clase: Crea los stats de una clase (deprecado)
+            \n!tabla <nombre de la table>: Da un resultado aleatorio de una tabla guardada
             '''
             )
         return
@@ -133,7 +134,7 @@ async def on_message(message):
         command,name=s.split(" ")
         tmp = await message.channel.send(randomTables.rollTable(name))
 #------------------------------------------------
-    if message.content.startswith("!crear "):
+    if message.content.startswith("!soloStats "):
         s=message.content.lower()
         command,breed=s.split(" ")
         if breed=="raza":
@@ -216,6 +217,24 @@ async def on_message(message):
         tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
 
 #-----------------------------------------------
+# FORBIDDEN!!!
+#-----------------------------------------------
+    if "abys" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+
+    if "walker" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+
+    if "pastel" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+
+
+    
+
+
 #    if message.content.startswith("Ultravioleta"):
 #        if str(message.author) != "bribot#3950":
 #            return
