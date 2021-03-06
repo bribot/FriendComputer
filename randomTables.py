@@ -9,7 +9,7 @@ import os
 import csv
 import random as ran
 
-path="./RandomTables/"
+path="./Tables/"
 
 index = {}
 
