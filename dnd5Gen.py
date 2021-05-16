@@ -10,6 +10,7 @@ from xml.dom import minidom
 import random
 import math
 from string import punctuation
+import os
 
 TYPE_RACE = 0
 TYPE_CLASS = 1
@@ -56,7 +57,8 @@ def testType():
 class generator():
     def __init__(self,banraces=[],banclasses=[],banbg=[]):
         # parse an xml file by name
-        self.mydoc = minidom.parse('./compendium/Character Compendium 3.1.0.xml')
+        thispath = os.path.dirname(os.path.realpath(__file__))
+        self.mydoc = minidom.parse(thispath+'/compendium/Character Compendium 3.1.0.xml')
         self.races = []
         self.classes = []
         self.backgrounds= []
