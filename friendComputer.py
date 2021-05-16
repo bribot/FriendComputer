@@ -15,9 +15,9 @@ import randomTables
 # TODO: USE BOT API
 client = discord.Client()
 vat = npc.generator(stats=npc.rpg.NORTEStats)
-banC = ['artificer','mystic (ua)','ranger (revised)']
-banR = ['aarakocra','aasimar (fallen)','aasimar (scourge)','bugbear','dwarf (duergar)','elf (eladrin)','firbolg','genasi (air)','genasi (earth)','genasi (fire)','genasi (water)','gnome (deep)','gnome (rock)','goliath','half-elf (aquatic elf descent)','half-elf (drow descent)','half-elf (moon elf or sun elf descent)','half-elf (wood elf descent)','halfling (ghostwise)','halfling (stout)','hobgoblin','kenku','kobold','lizardfolk','shifter (razorclaw)','shifter (wildhunt)','triton','yuan-ti pureblood']
-banb = ['cormanthor refugee','caravan specialist','city watch','clan crafter','cloistered scholar','cormanthor','refugee','courtier','earthspur miner','faction agent','far traveler','gate urchin','harborfolk','haunted one','hillsfar merchant','hillsfar smuggler','inheritor','investigator','knight of the order','mercenary veteran','mulmaster aristocrat','phlan refugee','secret identity','shade fanatic','trade sherrif','urban bounty hunter','uthgardt tribe member','waterdhavian noble']
+banC = [] #['artificer','mystic (ua)','ranger (revised)']
+banR = [] #['aarakocra','aasimar (fallen)','aasimar (scourge)','bugbear','dwarf (duergar)','elf (eladrin)','firbolg','genasi (air)','genasi (earth)','genasi (fire)','genasi (water)','gnome (deep)','gnome (rock)','goliath','half-elf (aquatic elf descent)','half-elf (drow descent)','half-elf (moon elf or sun elf descent)','half-elf (wood elf descent)','halfling (ghostwise)','halfling (stout)','hobgoblin','kenku','kobold','lizardfolk','shifter (razorclaw)','shifter (wildhunt)','triton','yuan-ti pureblood']
+banb = [] #['cormanthor refugee','caravan specialist','city watch','clan crafter','cloistered scholar','cormanthor','refugee','courtier','earthspur miner','faction agent','far traveler','gate urchin','harborfolk','haunted one','hillsfar merchant','hillsfar smuggler','inheritor','investigator','knight of the order','mercenary veteran','mulmaster aristocrat','phlan refugee','secret identity','shade fanatic','trade sherrif','urban bounty hunter','uthgardt tribe member','waterdhavian noble']
 vatXP = gen.generator(banclasses = banC, banraces = banR,banbg = banb)
 convos=[]
 LOG_FILENAME = time.ctime()+'.log'
@@ -43,8 +43,7 @@ def turningOff():
     f.write("\n")
     f.write("infractions=")
     f.write(str(infractions))
-
-atexit.register(turningOff)
+    atexit.register(turningOff)
 
 @client.event
 async def on_ready():
@@ -129,10 +128,16 @@ async def on_message(message):
             tmp = await message.channel.send("Solo puedes tirar en una tabla a la vez!")
             return
         elif len(s.split(' ')) == 1:
-            tmp = await message.channel.send("Necesitas darme una tabla, hasta el soylent verde lo sabe")
+            tmp = await message.channel.send("Necesitas darme una tabla, cerebro de soylent")
             return
         command,name=s.split(" ")
-        tmp = await message.channel.send(randomTables.rollTable(name))
+        if name == "rumores":
+            
+            tmp = await message.author.send(randomTables.rollTable(name))
+        else:
+            tmp = await message.channel.send(randomTables.rollTable(name))
+        
+#------------------------------------------------
 #------------------------------------------------
     if message.content.startswith("!soloStats "):
         s=message.content.lower()
