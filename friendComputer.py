@@ -11,6 +11,7 @@ import time
 import dnd5Gen as gen
 import logging
 import randomTables
+import diceBag
 
 # TODO: USE BOT API
 client = discord.Client()
@@ -81,7 +82,7 @@ async def on_message(message):
         for r in vatXP.races:
             m += r +"\n"
         tmp = await message.channel.send(m)
-        
+    
     if message.content.startswith("!clases"):
         m = ""
         for r in vatXP.classes:
@@ -105,6 +106,21 @@ async def on_message(message):
             tmp = await message.channel.send(errorMessage())
         else:
             tmp = await message.channel.send(m)
+            
+# -------------------------------------------------
+    if message.content.startswith("/r "):
+        m = ""
+        if '*' in message.content or "!" in message.content:
+            m = "Operacion no soportada aun!"
+        elif "d0" in message.content:
+            m = "No hagas eso!"
+        else:
+            d = diceBag.rollDice(message.content[3:])
+            m += "Esta modulo esta en beta!!!\n"
+            m += "Roll: " + str(d[1])+"\n"
+            m += "Resultado: " + str(d[0])
+        tmp = await message.channel.send(m)
+        return
         
 #------------------------------------------------
     if message.content.startswith("!ayuda"):

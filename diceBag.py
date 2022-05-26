@@ -6,30 +6,52 @@ Created on Sun Mar  7 15:03:02 2021
 """
 import random as ran
 
-def main():
+def test():
+    # msj = str(ran.randint(1,10))+'+'+str(ran.randint(1,5))+'d'+str(ran.randint(1,20))
+    msj= '5*1d4'
     print("Running...")
-    print(reconDice("1d4"))
+    print(msj)
+    print(reconDice(msj))
+    print(rollDice(msj))
 
 def rollDice(msj):
-    msj = "1d4 + 3"
-    msj = "getRoll(1,4) + 3"
-    return eval(msj)
+    msj = reconDice(msj)
+    msj2=[0,'']
+    for m in msj.split('+'):
+        if m.isnumeric():
+            msj2[0]=msj2[0]+int(m)
+            msj2[1]=msj2[1]+m+'+'
+        else:
+            tmp = eval(m)
+            msj2[0] = msj2[0]+tmp[0]
+            msj2[1] = msj2[1]+str(tmp[1])+'+'
+    msj2[1]=msj2[1][:-1]
+    return msj2
 
 def reconDice(msj):
-    while(msj.find('d')!=-1):
-        temp=msj.split('d')
-        
-        i = len(temp[0])-1
-        if i == 0:
-            temp[0] = 'getRoll('+temp[0]+','
-        else:
-            for j in range(i):
-                if not temp[0][i-j].isdigit:
-                    temp[0] = temp[0][:i-j+1] + 'getRoll(' + temp[0][i-j+1:] + ','
-                    break
-        msj = ''.join(temp)
-    return temp[0]
-                    
+    index=0
+    m=msj.split('d')
+    while((len(msj.split('d'))-index-1)!=0):
+        tmp=-1
+        while(True):
+            if (tmp+len(m[index])+1)==0 or not m[index][tmp].isnumeric():
+                m1 = m[index][tmp+1:]
+                break
+            tmp-=1
+        m[index]=m[index][0:tmp+1]+'getRoll('+m1+','
+        tmp=0
+        while(True):
+            if (tmp-len(m[index+1]))==0 or not m[index+1][tmp].isnumeric():
+                m2 = m[index+1][0:tmp]
+                break
+            tmp+=1
+        m[index+1]=m2+')'+m[index+1][tmp:]
+        m[index+1]=m[index]+m[index+1]
+        msj2=m[index+1]
+        m[index]=''
+        index+=1
+    msj = msj2
+    return msj                
 
 def getRoll(ndice, nfaces):
     dice = []
@@ -38,7 +60,7 @@ def getRoll(ndice, nfaces):
         die = ran.randint(1,nfaces)
         dice.append(die)
         result += die
-    return result
+    return result,dice
 
 if __name__ == '__main__':
     main()
