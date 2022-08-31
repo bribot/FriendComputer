@@ -230,6 +230,9 @@ async def on_message(message):
             
             tmp = await message.channel.send(pc+" "+ kill(pc))
         return
+#-----------------------------------------------------------------------------------
+    if "campal" in message.content.lower():
+        tmp = await message.channel.send("Todos saben que Alito fue a Campal")
 
 
 
