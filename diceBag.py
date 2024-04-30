@@ -8,10 +8,13 @@ import random as ran
 
 def test():
     # msj = str(ran.randint(1,10))+'+'+str(ran.randint(1,5))+'d'+str(ran.randint(1,20))
-    msj= '1d20-1'
+    msj= ''
+    nrolls = ran.randint(1,10)
+    for i in range(nrolls):
+        msj += str(ran.randint(1,5))+'d'+str(ran.randint(1,20)) + '+'
+    msj += str(ran.randint(-10,10))
     print("Running...")
     print(msj)
-    print(reconDice(msj))
     print(rollDice(msj))
 
 def rollDice(msj):
