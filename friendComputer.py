@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands 
+from discord import app_commands
 import asyncio
 import random as rand
 from responses import *
@@ -14,7 +15,7 @@ import randomTables
 import diceBag
 
 import os
-from openai import OpenAI
+#from openai import OpenAI
 
 
 
@@ -23,6 +24,13 @@ from openai import OpenAI
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+
+
+
+description = ''' Amiga Computadora esta aqui para ayudarte'''
+
+
+
 vat = npc.generator(stats=npc.rpg.NORTEStats)
 banC = [] #['artificer','mystic (ua)','ranger (revised)']
 banR = [] #['aarakocra','aasimar (fallen)','aasimar (scourge)','bugbear','dwarf (duergar)','elf (eladrin)','firbolg','genasi (air)','genasi (earth)','genasi (fire)','genasi (water)','gnome (deep)','gnome (rock)','goliath','half-elf (aquatic elf descent)','half-elf (drow descent)','half-elf (moon elf or sun elf descent)','half-elf (wood elf descent)','halfling (ghostwise)','halfling (stout)','hobgoblin','kenku','kobold','lizardfolk','shifter (razorclaw)','shifter (wildhunt)','triton','yuan-ti pureblood']
@@ -36,14 +44,94 @@ LOG_FILENAME = time.ctime()+'.log'
 #infractions={"DM":0}
 maxInfractions=3
 
+tree = app_commands.CommandTree(client)
 
-class convo():
-    def __init__(self,author,message,onGoing):
-        return    
-    
-    def getResponse():
-        return "OwO"
-        
+guild_id = 337628077775519744
+
+@tree.command(
+    name="r",
+    description="roll some dice",
+    #guild=discord.Object(guild_id)
+)
+async def rollDice(interaction, message: str):
+    m = ""
+    if "!" in message:
+        m = "Operacion no soportada aun!"
+    elif "d0" in message:
+        m = "No hagas eso!"
+    else:
+        d = diceBag.rollDice(message)
+        #m += "Esta modulo esta en beta!!!\n"
+        m += "Roll: " + str(d[1])+"\n"
+        m += "Resultado: " + str(d[0])
+    await interaction.response.send_message(m)
+
+@tree.command(
+    name="races",
+    description="Available races",
+    #guild=discord.Object(guild_id)
+)
+async def races(interaction):
+    m = ""
+    for r in vatXP.races:
+        m += r +"\n"
+    await interaction.response.send_message(m)
+    return
+
+@tree.command(
+    name="clases",
+    description="Available clases",
+    #guild=discord.Object(guild_id)
+)
+async def clases(interaction):
+    m = ""
+    for r in vatXP.classes:
+        m += r +"\n"
+    await interaction.response.send_message(m)
+
+@tree.command(
+    name="backgrounds",
+    description="Available backgrounds",
+    #guild=discord.Object(guild_id)
+)
+async def backgrounds(interaction):
+    m = ""
+    for r in vatXP.backgrounds:
+        m += r +"\n"
+    await interaction.response.send_message(m)
+
+@tree.command(
+    name="create",
+    description='''Create a Caracter
+    class, race, background''',
+    #guild=discord.Object(guild_id)
+)
+async def createCharacter(interaction, message: str):
+    m = "" 
+    m = vatXP.interface(message)
+#        print(m)
+    if m == "error":
+        logging.debug("----------------------------HERE------------------------------")
+        logging.debug(message.content)
+        await interaction.response.send_message(errorMessage())
+    else:
+        await interaction.response.send_message(m)
+
+@tree.command(
+    name="tabla",
+    description="Available tables: |"+randomTables.tableIndex(),
+    #guild=discord.Object(guild_id)
+)
+async def rollTable(interaction, message: str):
+    s=message.lower()
+    if len(s.split(' '))>1:
+        await interaction.response.send_message("Solo puedes tirar en una tabla a la vez!")
+        return
+    name=s
+    # if name == "rumores":
+    #     await interaction.user.dm_channel.send("hewwo")
+    # else:
+    await interaction.response.send_message(randomTables.rollTable(name))
 
 def turningOff():
     f = open("computerConf.py","w+")
@@ -63,6 +151,7 @@ async def on_ready():
     for i in client.guilds:
         logging.info(i)
 #    print('------')
+    await tree.sync(guild = discord.Object(id = 337628077775519744))
     await client.change_presence(activity=discord.Game(name="Paranoia"))
 
 
@@ -81,87 +170,30 @@ async def on_message(message):
             await message.author.create_dm()
             logging.info(message.author.dm_channel)
         await message.author.dm_channel.send("hewwo")
+        return
+
+    if message.content.startswith("test"):
+        await message.channel.send("test")
+        return
+
+    # if message.content.startswith("/r"):
+    #     m = ""
+    #     if "!" in message.content:
+    #         m = "Operacion no soportada aun!"
+    #     elif "d0" in message.content:
+    #         m = "No hagas eso!"
+    #     else:
+    #         d = diceBag.rollDice(message.content[2:])
+    #         #m += "Esta modulo esta en beta!!!\n"
+    #         m += "Roll: " + str(d[1])+"\n"
+    #         m += "Resultado: " + str(d[0])
+    #     await message.channel.send(m)
+    #     return
 #        print("------------------------")
-        
-# NEW GENERATOR
-        
-    if message.content.startswith("!razas"):
-        m = ""
-        for r in vatXP.races:
-            m += r +"\n"
-        tmp = await message.channel.send(m)
     
-    if message.content.startswith("!clases"):
-        m = ""
-        for r in vatXP.classes:
-            m += r +"\n"
-        tmp = await message.channel.send(m)
-        
-    if message.content.startswith("!trasfondos"):
-        m = ""
-        for r in vatXP.backgrounds:
-            m += r +"\n"
-        tmp = await message.channel.send(m)
-    
-    if message.content.startswith("!crear "):
-        m = ""     
-        mess=message.content[7:]
-        m = vatXP.interface(mess)
-#        print(m)
-        if m == "error":
-            logging.debug("----------------------------HERE------------------------------")
-            logging.debug(message.content)
-            tmp = await message.channel.send(errorMessage())
-        else:
-            tmp = await message.channel.send(m)
-            
-# -------------------------------------------------
-    if message.content.startswith("/r "):
-        m = ""
-        if '*' in message.content or "!" in message.content:
-            m = "Operacion no soportada aun!"
-        elif "d0" in message.content:
-            m = "No hagas eso!"
-        else:
-            d = diceBag.rollDice(message.content[3:])
-            m += "Esta modulo esta en beta!!!\n"
-            m += "Roll: " + str(d[1])+"\n"
-            m += "Resultado: " + str(d[0])
-        tmp = await message.channel.send(m)
-        return
-        
-#------------------------------------------------
-    if message.content.startswith("!ayuda"):
-        tmp = await message.channel.send(
-            '''Lista de comandos de Amiga Computadora: 
-            \n!acusar @nombre: Acusar a alguien de traicion con amiga computadora
-            \n!kill @nombre: Intento de traicion a alguien
-            \n!crear class, race, background: Crea un personaje utilizando la base de datos de 5e
-            \n!razas: Muestra la lista de razas
-            \n!clases: Muestra la lista de clases
-            \n!trasfondos: Muestra la lista de trasfondos
-            \n!soloStats clase: Crea los stats de una clase (deprecado)
-            \n!tabla <nombre de la table>: Da un resultado aleatorio de una tabla guardada
-            '''
-            )
-        return
-#------------------------------------------------
-    if message.content.startswith("!tabla "):
-        s=message.content.lower()
-        if len(s.split(' '))>2:
-            tmp = await message.channel.send("Solo puedes tirar en una tabla a la vez!")
-            return
-        elif len(s.split(' ')) == 1:
-            tmp = await message.channel.send("Necesitas darme una tabla, cerebro de soylent")
-            return
-        command,name=s.split(" ")
-        if name == "rumores":
-            
-            tmp = await message.author.send(randomTables.rollTable(name))
-        else:
-            tmp = await message.channel.send(randomTables.rollTable(name))
-        
-#------------------------------------------------
+    if message.content.startswith("Amiga computadora"):
+        tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
+
 #------------------------------------------------
     if message.content.startswith("!soloStats "):
         s=message.content.lower()
@@ -244,52 +276,51 @@ async def on_message(message):
 
 
 
-#-----------------------------------------------
-    if message.content.startswith("Amiga computadora"):
-        tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
+# #-----------------------------------------------
+    
 
-#-----------------------------------------------
-# FORBIDDEN!!!
-#-----------------------------------------------
-    if "abys" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+# #-----------------------------------------------
+# # FORBIDDEN!!!
+# #-----------------------------------------------
+#     if "abys" in message.content.lower():
+#         tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
+#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
-    if "walker" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+#     if "walker" in message.content.lower():
+#         tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
+#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
-    if "pastel" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+#     if "pastel" in message.content.lower():
+#         tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
+#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
 
     
 
 
-#    if message.content.startswith("Ultravioleta"):
-#        if str(message.author) != "bribot#3950":
-#            return
-#        print("------------------------")
-#        print("Name:Infractions:Clones")
-#        
-#        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
-#        for m in clones:
-#            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-#            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-#        tmp = await message.channel.send("------------------------")
-#        print("------------------------")
-#
-#        return
-#-----------------------------------------------
-    for res in respond:
-        if res in message.content.lower():
-            tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
-            #print(res+" {0.name}".format(message.author))
-            #print(str(message.author))
-            if "regla" not in res:
-                return
-            tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+# #    if message.content.startswith("Ultravioleta"):
+# #        if str(message.author) != "bribot#3950":
+# #            return
+# #        print("------------------------")
+# #        print("Name:Infractions:Clones")
+# #        
+# #        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
+# #        for m in clones:
+# #            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+# #            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+# #        tmp = await message.channel.send("------------------------")
+# #        print("------------------------")
+# #
+# #        return
+# #-----------------------------------------------
+#     for res in respond:
+#         if res in message.content.lower():
+#             tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
+#             #print(res+" {0.name}".format(message.author))
+#             #print(str(message.author))
+#             if "regla" not in res:
+#                 return
+#             tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
 def errorMessage():
     return "Algo salio mal, esto es tu culpa"
@@ -312,4 +343,6 @@ def awardInfraction(pc,n):
         return "tienes %d infraccion(es)" % infractions[pc]
 
 
+#bot.run(credentials.botToken)
 client.run(credentials.botToken) 
+

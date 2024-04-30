@@ -33,9 +33,9 @@ def loadTable(file):
     return table
 
 def tableIndex():
-    result='Tablas disponibles'
+    result = ''#'Tablas disponibles'
     for file in os.listdir(path):
-        result+='\n'+file.split('.')[0]
+        result+=file.split('.')[0] + " | "
     return result
 
 def checkTable(name):
