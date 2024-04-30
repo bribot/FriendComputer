@@ -13,8 +13,16 @@ import logging
 import randomTables
 import diceBag
 
+import os
+from openai import OpenAI
+
+
+
+
 # TODO: USE BOT API
-client = discord.Client()
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 vat = npc.generator(stats=npc.rpg.NORTEStats)
 banC = [] #['artificer','mystic (ua)','ranger (revised)']
 banR = [] #['aarakocra','aasimar (fallen)','aasimar (scourge)','bugbear','dwarf (duergar)','elf (eladrin)','firbolg','genasi (air)','genasi (earth)','genasi (fire)','genasi (water)','gnome (deep)','gnome (rock)','goliath','half-elf (aquatic elf descent)','half-elf (drow descent)','half-elf (moon elf or sun elf descent)','half-elf (wood elf descent)','halfling (ghostwise)','halfling (stout)','hobgoblin','kenku','kobold','lizardfolk','shifter (razorclaw)','shifter (wildhunt)','triton','yuan-ti pureblood']
