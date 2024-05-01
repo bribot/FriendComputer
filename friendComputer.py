@@ -170,7 +170,6 @@ async def on_ready():
     for i in client.guilds:
         logging.info(i)
 #    print('------')
-    await tree.sync(guild = discord.Object(id = 337628077775519744))
     await client.change_presence(activity=discord.Game(name="Paranoia"))
 
 
@@ -194,6 +193,10 @@ async def on_message(message):
     if message.content.startswith("test"):
         await message.channel.send("test")
         return
+    if message.content.startswith("/sync"):
+        await tree.sync()
+        return
+
 
     # if message.content.startswith("/r"):
     #     m = ""
