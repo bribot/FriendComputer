@@ -170,7 +170,7 @@ async def on_ready():
     for i in client.guilds:
         logging.info(i)
 #    print('------')
-    await tree.sync()
+    await tree.sync(guild = discord.Object(id = 337628077775519744))
     await client.change_presence(activity=discord.Game(name="Paranoia"))
 
 
