@@ -152,6 +152,35 @@ async def rollTable(interaction, message: str):
     # else:
     await interaction.response.send_message(randomTables.rollTable(name))
 
+@tree.command(
+    name="solostats",
+    description= "Just stats for a new npc character"
+)
+async def justStats(interaction, message: str):
+    s=message.lower()
+    breed=s
+    if breed=="raza":
+        await interaction.response.send_message("Creando raza aleatoria...\n" +vat.randomTable())
+        return
+    for kind in npc.rpg.npcType:
+        if breed==kind or breed=="npc":
+            #await interaction.response.send_message("Generando clon")
+            statsMessage = "Generando clon \n"
+            if breed == "npc":
+                breed="none"
+            vat.generate(breed)
+            statsMessage+="Los dados fueron:\n"   
+            for s in vat.usedRolls:
+                statsMessage+=str(s)+"\n"
+            statsMessage+="Aqui esta tu clon\n"
+            for s in vat.stats:
+                statsMessage+=s+": "+str(vat.stats[s])+"\n"
+            await interaction.response.send_message(statsMessage)
+            #tmp = await message.channel.send("Tiene %d gp" % vat.money)
+            return
+    await interaction.response.send_message("No tengo registrado este tipo de clon en mi base de datos")
+    return
+
 def turningOff():
     f = open("computerConf.py","w+")
     f.write("clones=")
@@ -190,57 +219,16 @@ async def on_message(message):
         await message.author.dm_channel.send("hewwo")
         return
 
-    if message.content.startswith("test"):
-        await message.channel.send("test")
-        return
-    if message.content.startswith("/sync"):
-        await tree.sync()
-        return
-
-
-    # if message.content.startswith("/r"):
-    #     m = ""
-    #     if "!" in message.content:
-    #         m = "Operacion no soportada aun!"
-    #     elif "d0" in message.content:
-    #         m = "No hagas eso!"
-    #     else:
-    #         d = diceBag.rollDice(message.content[2:])
-    #         #m += "Esta modulo esta en beta!!!\n"
-    #         m += "Roll: " + str(d[1])+"\n"
-    #         m += "Resultado: " + str(d[0])
-    #     await message.channel.send(m)
+    # if message.content.startswith("test"):
+    #     await message.channel.send("test")
     #     return
-#        print("------------------------")
+    if message.content.startswith("/sync") and message.author.name=="brib0t":
+        await tree.sync()
+        await message.channel.send("Commands Synced")
+        return
     
     if message.content.startswith("Amiga computadora"):
         tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
-
-#------------------------------------------------
-    if message.content.startswith("!soloStats "):
-        s=message.content.lower()
-        command,breed=s.split(" ")
-        if breed=="raza":
-            tmp = await message.channel.send("Creando raza aleatoria...\n" +vat.randomTable())
-            return
-        for kind in npc.rpg.npcType:
-            if breed==kind or breed=="npc":
-                tmp = await message.channel.send("Generando clon")
-                if breed == "npc":
-                    breed="none"
-                vat.generate(breed)
-                statsMessage="Los dados fueron:\n"   
-                for s in vat.usedRolls:
-                    statsMessage+=str(s)+"\n"
-                statsMessage+="Aqui esta tu clon\n"
-                for s in vat.stats:
-                    statsMessage+=s+": "+str(vat.stats[s])+"\n"
-                tmp = await message.channel.send(statsMessage)
-                #tmp = await message.channel.send("Tiene %d gp" % vat.money)
-                return
-        tmp = await message.channel.send("No tengo registrado este tipo de clon en mi base de datos")
-        return
-        
 
 #------------------------------------------------
     if "!acusar" in message.content:
@@ -301,48 +289,45 @@ async def on_message(message):
 # #-----------------------------------------------
     
 
-# #-----------------------------------------------
-# # FORBIDDEN!!!
-# #-----------------------------------------------
-#     if "abys" in message.content.lower():
-#         tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
-#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+#-----------------------------------------------
+# FORBIDDEN!!!
+#-----------------------------------------------
+    if "abys" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
-#     if "walker" in message.content.lower():
-#         tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
-#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+    if "walker" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
 
-#     if "pastel" in message.content.lower():
-#         tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
-#         tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+    if "pastel" in message.content.lower():
+        tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
+        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+        
+    if message.content.startswith("Ultravioleta"):
+       if str(message.author.name) != "brib0t":
+           return
+       print("------------------------")
+       print("Name:Infractions:Clones")
+       
+       tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
+       for m in clones:
+           print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+           tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+       tmp = await message.channel.send("------------------------")
+       print("------------------------")
 
-
-    
-
-
-# #    if message.content.startswith("Ultravioleta"):
-# #        if str(message.author) != "bribot#3950":
-# #            return
-# #        print("------------------------")
-# #        print("Name:Infractions:Clones")
-# #        
-# #        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
-# #        for m in clones:
-# #            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-# #            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-# #        tmp = await message.channel.send("------------------------")
-# #        print("------------------------")
-# #
-# #        return
-# #-----------------------------------------------
-#     for res in respond:
-#         if res in message.content.lower():
-#             tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
-#             #print(res+" {0.name}".format(message.author))
-#             #print(str(message.author))
-#             if "regla" not in res:
-#                 return
-#             tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+       return
+#-----------------------------------------------
+    for res in respond:
+        if res in message.content.lower():
+            tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
+            #print(res+" {0.name}".format(message.author))
+            #print(str(message.author))
+            if "regla" not in res:
+                return
+            tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+            
 
 def errorMessage():
     return "Algo salio mal, esto es tu culpa"
