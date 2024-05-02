@@ -6,13 +6,15 @@ Created on Sun Mar  7 15:03:02 2021
 """
 import random as ran
 
+specialCommands = ['u','l']
+
 def test():
-    # msj = str(ran.randint(1,10))+'+'+str(ran.randint(1,5))+'d'+str(ran.randint(1,20))
-    msj= ''
-    nrolls = ran.randint(1,10)
-    for i in range(nrolls):
-        msj += str(ran.randint(1,5))+'d'+str(ran.randint(1,20)) + '+'
-    msj += str(ran.randint(-10,10))
+    msj = '2d20l'
+    # msj= ''
+    # nrolls = ran.randint(1,10)
+    # for i in range(nrolls):
+    #     msj += str(ran.randint(1,5))+'d'+str(ran.randint(1,20)) + '+'
+    # msj += str(ran.randint(-10,10))
     print("Running...")
     print(msj)
     print(rollDice(msj))
@@ -40,12 +42,18 @@ def reconDice(msj):
                     m2 = m2+temp
                 else:
                     face = int(m2)
-                    mR = getRoll(dice,face)
+                    if(len(m)>0 and m[0] in specialCommands):
+                        temp,m = m[0],m[1:]
+                        sp = temp
+                    else:
+                        temp = ''
+                    mR = getRoll(dice,face,temp)
                     dice = -1
                     face = -1
                     result = result + mR
                     nRoll-=1
                     facedice = 0
+                
             facedice = 0 if nRoll>0 else 1
         if(facedice == 0):
             while(facedice == 0):
@@ -61,7 +69,7 @@ def reconDice(msj):
 
                     
 
-def getRoll(ndice, nfaces):
+def getRoll(ndice, nfaces, special = ''):
     dice = []
     result = '('
     for n in range(ndice):
@@ -70,6 +78,12 @@ def getRoll(ndice, nfaces):
         result += str(die) + "+"
     result = result[0:-1]
     result += ")"
+    if(special in specialCommands[0]):
+        result = 'max'+result
+        result = result.replace('+',',')
+    elif(special == specialCommands[1]):
+        result = 'min'+result
+        result = result.replace('+',',')
     return result#,dice
 
 if __name__ == '__main__':
