@@ -27,26 +27,21 @@ client = discord.Client(intents=intents)
 
 
 
-description = ''' Amiga Computadora esta aqui para ayudarte
+UV = ''' Amiga Computadora esta aqui para ayudarte
 
                                                                                 
                                                                                 
-                 .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                  
-                /@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.                
-               (@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.               
-              (@@@@@@@@@@@@@@@@@%*.            ,#&@@@@@@@@@@@@@@@*              
-             /@@@@@@@@@@@@@*                         .&@@@@@@@@@@@(             
-            %@@@@@@@@@@#                                 ,@@@@@@@@@/            
-           &@@@@@@@@#                                       *@@@@@@@#           
-          @@@@@@@@/                                           ,@@@@@@#          
-        .@@@@@@@%                .%@@@@@@@@@@@#                 (@@@@@&         
-       ,@@@@@@@/              %@@@@@@@@@@@@@.                    .@@@@@@        
-      ,@@@@@@@/             @@@@@@@@@@@@@@@                       .@@@@@@       
-     *@@@@@@@%            *@@@@@@@@@@@@@@@%                        /@@@@@@      
-    /@@@@@@@@.           *@@@@@@@@@@@@@@@@@.                        @@@@@@@,    
-   (@@@@@@@@@            &@@@@@@@@@@@@@@@@@@&          #.           %@@@@@@@,   
-  /@@@@@@@@@@            @@@@@@@@@@@@@@@@@@@@@@@@&&@@@@@*           %@@@@@@@@/  
- (@@@@@@@@@@@.           %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.           &@@@@@@@@@#'''
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░▒██████████████████████░░░░░░░░░
+░░░░░░░░████████████████████████░░░░░░░░
+░░░░░░░███████▓▒▒░░░░░░░▒▒▓█████▓░░░░░░░
+░░░░░░█████▓░░░░░░░░░░░░░░░░▒▓███▓░░░░░░
+░░░░░▓███▒░░░░░░░░░░░░░░░░░░░░░▓██▒░░░░░
+░░░░▓███░░░░░░░▒▓█████▒░░░░░░░░░▓██▒░░░░
+░░░▓███▒░░░░░░▓██████▒░░░░░░░░░░░▓██▒░░░
+░░▒███▓░░░░░░████████▒░░░░░░░░░░░░███▒░░
+░▒████▒░░░░░▒█████████▓▒░░▒▒░░░░░░████░░
+'''
 
 
 
@@ -229,7 +224,7 @@ async def on_message(message):
         return
     
     if message.content.startswith("Amiga computadora"):
-        tmp = await message.channel.send("La Amiga computadora esta aqui para ayudarte")
+        await message.channel.send("La Amiga computadora esta aqui para ayudarte")
 
 #------------------------------------------------
     if "!acusar" in message.content:
@@ -281,53 +276,27 @@ async def on_message(message):
             
             tmp = await message.channel.send(pc+" "+ kill(pc))
         return
-#-----------------------------------------------------------------------------------
-    if "campal" in message.content.lower():
-        tmp = await message.channel.send("Todos saben que Alito fue a Campal")
-
-
-
-# #-----------------------------------------------
     
-
-#-----------------------------------------------
-# FORBIDDEN!!!
-#-----------------------------------------------
-    if "abys" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra Abyss es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
-
-    if "walker" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra walker es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
-
-    if "pastel" in message.content.lower():
-        tmp = await message.channel.send("Conocer la palabra pastel es un acto de traicion!")
-        tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
-        
-    if message.content.startswith("Ultravioleta"):
-       if str(message.author.name) != "brib0t":
-           return
-       print("------------------------")
-       print("Name:Infractions:Clones")
-       
-       tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
-       for m in clones:
-           print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-           tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
-       tmp = await message.channel.send("------------------------")
-       print("------------------------")
-
-       return
-#-----------------------------------------------
     for res in respond:
         if res in message.content.lower():
             tmp = await message.channel.send("{0.name} ".format(message.author)+respond[res].format(message.author))               
             #print(res+" {0.name}".format(message.author))
             #print(str(message.author))
-            if "regla" not in res:
-                return
-            tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+            if respond[res].startswith(":warning:"):
+                tmp = await message.channel.send("{0.name} ".format(message.author) + awardInfraction(str(message.author),1))
+            return
+
+    if message.content.startswith("Ultravioleta"):
+       if [n.name == "Admin" for n in message.author.roles]: #str(message.author.name) != "brib0t" or 
+        await message.channel.send(UV) 
+        tmp = await message.channel.send("------------------------\n Name:Infractions:Clones")
+        for m in clones:
+            print(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+            tmp = await message.channel.send(m + " : " + str(infractions[m])+" : "+str(clones[m]))
+        tmp = await message.channel.send("------------------------")
+        print("------------------------")
+
+       return
             
 
 def errorMessage():
