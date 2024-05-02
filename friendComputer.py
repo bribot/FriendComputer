@@ -81,8 +81,9 @@ async def rollDice(interaction, message: str):
     else:
         d = diceBag.rollDice(message)
         #m += "Esta modulo esta en beta!!!\n"
-        m += "Roll: " + str(d[1])+"\n"
-        m += "Resultado: " + str(d[0])
+        m += "Rolling: " + message +"\n"
+        m += "Dice: " + str(d[1])+"\n"
+        m += "Result: " + str(d[0])
     await interaction.response.send_message(m)
 
 @tree.command(
