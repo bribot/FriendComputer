@@ -3,7 +3,11 @@
 "comunista":":loudspeaker: los mutantes y comunistas son enemigos de El Complejo Alfa y de la Amiga Computadora",
 "mutante":":loudspeaker: los mutantes y comunistas son enemigos de El Complejo Alfa y de la Amiga Computadora",
 "triste":":pill: toma una pildora de felicidad",
-"test":"esto es una prueba"
+"test":"esto es una prueba",
+"campal":"Todos saben que Alito fue a Campal",
+"abys":":warning: Conocer la palabra Abyss es un acto de traicion!",
+"walker":":warning: Conocer la palabra walker es un acto de traicion!",
+"pastel":":warning: Conocer la palabra pastel es un acto de traicion!"
 }
 
 death=(
