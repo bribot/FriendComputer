@@ -78,7 +78,7 @@ def getRoll(ndice, nfaces, special = ''):
         result += str(die) + "+"
     result = result[0:-1]
     result += ")"
-    if(special in specialCommands[0]):
+    if(special == specialCommands[0]):
         result = 'max'+result
         result = result.replace('+',',')
     elif(special == specialCommands[1]):
