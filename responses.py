@@ -7,7 +7,8 @@
 "campal":"Todos saben que Alito fue a Campal",
 "abys":":warning: Conocer la palabra Abyss es un acto de traicion!",
 "walker":":warning: Conocer la palabra walker es un acto de traicion!",
-"pastel":":warning: Conocer la palabra pastel es un acto de traicion!"
+"pastel":":warning: Conocer la palabra pastel es un acto de traicion!",
+"como se puede revertir la entropia":"Aun no tengo suficiente informacion para dar una respuesta contundente",
 }
 
 death=(
