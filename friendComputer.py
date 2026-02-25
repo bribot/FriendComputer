@@ -215,7 +215,7 @@ async def checkPCstats(interaction):
         description="test function"
 )
 async def multipass(interaction,message: str):
-    awardPoints(interaction.user)
+    # awardPoints(interaction.user)
     return
 # @tree.command(
 #         name="acusar", 
