@@ -1,19 +1,21 @@
 import discord
 from discord.ext import commands 
 from discord import app_commands
+from typing import Literal
 import asyncio
 import random as rand
 from responses import *
 import credentials
 import npc
 import atexit
-from computerConf import *
+# from computerConf import *
 import time
 import dnd5Gen as gen
 import logging
 import randomTables
 import diceBag
 import sqlite3 as sql
+import duelSimulation as duel
 
 import os
 #from openai import OpenAI
@@ -217,25 +219,112 @@ async def checkPCstats(interaction):
 async def multipass(interaction,message: str):
     # awardPoints(interaction.user)
     return
-# @tree.command(
-#         name="acusar", 
-#         description="acusar por traicion")
-# async def acusar(interaction, message: str):
-#     #print(message.mentions[0].discriminator)
-#     pc = interaction.data["resolved"]["users"]
-#     for user in pc:
-#         isPCindb(pc[user]["id"])
-#     return
-    
+@tree.command(name = "explica_duelo"
+              , description = "Explica como funciona el sistema de duelo"
+              )
+async def explica_duelo(interaction):
+    await interaction.response.send_message(duel.attackExplanation())
+    return
 
-def turningOff():
-    f = open("computerConf.py","w+")
-    f.write("clones=")
-    f.write(str(clones))
-    f.write("\n")
-    f.write("infractions=")
-    f.write(str(infractions))
-    atexit.register(turningOff)
+#-----------------------------------------------------------------------------------------------
+@tree.command(
+        name="atacar", 
+        description="Reta a un ciudadano a un duelo apostando puntos"
+        )
+async def atacar(interaction: discord.Interaction, ciudadano: discord.Member, attack: duel.attackLiteral, apuesta: int):
+    pc = interaction.user
+    msg0 = ""
+    # print(interaction.id)
+    if ciudadano.bot:
+        return await interaction.response.send_message("No puedes atacar a un bot!")
+    if ciudadano == pc:
+        return await interaction.response.send_message("No puedes atacarte a ti mismo!")
+    
+    pc_current_points = getPCstats(pc)[PCstats["points"]]
+    if pc_current_points == 0:
+        apuesta = 100
+        msg0 = "No tienes puntos para apostar. La apuesta se ha reducido a **100 puntos** de cortesia.\n"
+    elif pc_current_points < apuesta:
+        apuesta = pc_current_points
+        msg0 = f"No tienes suficientes puntos para apostar esa cantidad. La apuesta se ha reducido a **{apuesta} puntos**.\n"
+
+    # is this duel already happening?
+    if any((d['citizen_member'].id == ciudadano.id and d['attacker_member'].id == pc.id) for d in duel.activeDuels.values()):
+        return await interaction.response.send_message(f"**{ciudadano.display_name}** ya tiene un duelo pendiente. ¡Espera tu turno!", ephemeral=True)
+
+    await interaction.response.send_message(f"{msg0}{pc.mention} ha retado a {ciudadano.mention} a un **duelo** apostando **{apuesta}** puntos! \n" 
+                                            f"Usa la opcion de Reply en este mensaje con el nombre de tu arma para defenderte: \n`{', '.join(duel.attacks.keys())}`")
+    message = await interaction.original_response()
+
+    # SAVE DUEL DATA
+    duel.activeDuels[message.id] = {
+        "citizen_member": ciudadano,
+        "attacker_member": pc,
+        "initial_attack": attack,
+        "original_channel": interaction.channel_id,
+        "bet": apuesta
+    }
+    
+@tree.command(
+        name="duelos_activos",
+        description="Muestra los duelos activos"
+)
+async def duelos_activos(interaction):
+    if not duel.activeDuels:
+        await interaction.response.send_message("No hay duelos activos en este momento.")
+        return
+    
+    message = "**Duelos Activos:**\n"
+    for duel_id, data in duel.activeDuels.items():
+        message += f"- {data['attacker_member'].display_name} vs {data['citizen_member'].display_name} (Apuesta: {data['bet']} puntos)\n"
+    
+    await interaction.response.send_message(message)
+
+@tree.command(name="cancelar_duelo", 
+              description="Cancela duelos activos en los que estés involucrado"
+              )
+async def cancelar_duelo(interaction):
+    pc = interaction.user
+    duel_to_cancel = None
+    
+    for duel_id, data in duel.activeDuels.items():
+        if data['citizen_member'].id == pc.id or data['attacker_member'].id == pc.id:
+            duel_to_cancel = duel_id
+            break
+    
+    if duel_to_cancel:
+        del duel.activeDuels[duel_to_cancel]
+        message = f"El duelo entre {data['attacker_member'].display_name} y {data['citizen_member'].display_name} ha sido cancelado. \n"
+        message += f"{discountPoints(pc, data['bet'])} por tu **cobardia**!\n"
+        await interaction.response.send_message(message)
+    else:
+        await interaction.response.send_message("No tienes duelos activos para cancelar.")
+
+@tree.command(name="duelo_contra_bot",
+                description="Reta a un duelo contra un NPC controlado por la Amiga Computadora"
+    )
+async def duelo_contra_bot(interaction, attack: duel.attackLiteral, apuesta: int):
+    pc = interaction.user
+    msg = ""
+    pc_points=getPCstats(pc)[PCstats["points"]]
+    if pc_points == 0:
+        apuesta = 100
+        msg = "No tienes puntos para apostar. La apuesta se ha reducido a **100 puntos** de cortesia.\n"
+    elif pc_points < apuesta:
+        msg = f"No tienes suficientes puntos para apostar esa cantidad. La apuesta se ha reducido a **{apuesta} puntos**.\n"
+        apuesta = pc_points
+    
+    result, narration = duel.playSimulation_singleplayer(pc.display_name.capitalize(), attack)
+    if result == 1:
+        point_msg = awardPoints(pc, apuesta)
+    elif result == 2:
+        point_msg = discountPoints(pc, apuesta)
+    else:
+        point_msg = "Nadie gana ni pierde puntos."
+    await interaction.response.send_message(
+        f"{msg}\n*{narration}*\n{point_msg}")
+        
+
 
 @client.event
 async def on_ready():
@@ -250,9 +339,38 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    
+        
     if message.author.id == client.user.id:
         return
+    
+    # ------------------------------Duel Sim--------------------------------------
+    # Verificar si el mensaje es un reply del mensaje original y si el usuario tiene un duelo pendiente
+    if message.reference is not None and message.reference.message_id in duel.activeDuels and message.author.id == duel.activeDuels[message.reference.message_id]["citizen_member"].id:
+        eleccion = message.content.capitalize()
+        
+        if eleccion in duel.attacks.keys():  
+            datos = duel.activeDuels.pop(message.reference.message_id) 
+            result, narration = duel.playSimulation(datos["attacker_member"].name.capitalize(), message.author.name.capitalize(), datos["initial_attack"], eleccion)
+            canal = client.get_channel(datos["original_channel"])
+            if result == 1:
+                point_msg = pointExchange(datos["attacker_member"], message.author, datos["bet"])
+            elif result == 2:
+                point_msg = pointExchange(message.author, datos["attacker_member"], datos["bet"])
+            else:
+                point_msg = "Nadie gana ni pierde puntos."
+            if canal:
+                await canal.send(
+                    f"*{narration}*"
+                    f"\n---\n"
+                    f"**¡El duelo ha concluido!**\n"
+                    f"{point_msg}"
+                    
+                )
+        else:
+            await message.author.send(f"❌ Arma no válida. Elige una de: {', '.join(duel.attacks.keys())}")
+        await message.delete()
+        return    
+    # --------------------------------------------------------------------------------
     
     if message.content.startswith("hewwo"):
         logging.info(message.guild)
@@ -351,7 +469,7 @@ def isPCindb(pc):
     res = cur.execute(query, (pc.id,))
     if res.fetchone() is None:
         query = "INSERT INTO citizens VALUES (?,?,?,?,?,?,?)"
-        res = cur.execute(query, (pc.id,pc.name,0,0,0,0,"mutant"))
+        res = cur.execute(query, (pc.id,pc.name,0,0,500,0,"mutant"))
         con.commit()
         print("new user added")
     return
@@ -369,12 +487,19 @@ def updatePCStats(pc, pcStat = "points", statValue = 100):
     con.commit()
     return
 
-# Returns str message
+def pointExchange(pc1, pc2, points):
+    pc2_stats = getPCstats(pc2)
+    if pc2_stats[PCstats["points"]]<points:
+        points = pc2_stats[PCstats["points"]]
+    pointUpdate(pc1,points)
+    pointUpdate(pc2,-points)
+    return pc1.mention + " ha ganado **%d puntos** de %s" % (points, pc2.mention)
+
 def awardPoints(pc,points = 0):
     if points == 0:
         points = rand.randint(0,500)
     pointUpdate(pc,points)    
-    message = "%s Has ganado %d puntos" % (pc.name, points)
+    message = "%s Has ganado **%d puntos**" % (pc.name, points)
     # print(message)
     return message
 # Returns str message
@@ -382,7 +507,7 @@ def discountPoints(pc,points = 0):
     if points == 0:
         points = rand.randint(0,500)
     pointUpdate(pc,-points)    
-    message = "%s Has perdido %d puntos" % (pc.name, points)
+    message = "%s Has perdido **%d puntos**" % (pc.name, points)
     # print(message)
     return message
 #Returns message with infractions and points
