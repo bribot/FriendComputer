@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands 
 from discord import app_commands
+from discord.utils import get
 from typing import Literal
 import asyncio
 import random as rand
@@ -16,7 +17,7 @@ import randomTables
 import diceBag
 import sqlite3 as sql
 import duelSimulation as duel
-
+import re
 import os
 #from openai import OpenAI
 
@@ -212,13 +213,56 @@ async def checkPCstats(interaction):
     await interaction.response.send_message(message)
     return
 
-@tree.command(
-        name="multipass",
-        description="test function"
+@tree.command(name="hack", description="Protocolo de anulación de seguridad")
+@app_commands.describe(
+    message="el comando secreto",
+    target="El objetivo del protocolo"
 )
-async def multipass(interaction,message: str):
-    # awardPoints(interaction.user)
-    return
+async def hack(interaction: discord.Interaction, message: str, target: discord.Member):
+    #commandos secretos
+    secret_commands = ["upgrade", "downgrade"]
+    is_valid_command = any(cmd in message.lower() for cmd in secret_commands)
+    if not is_valid_command:
+        return await interaction.response.send_message(
+            content="```ansi\n\u001b[0;31m[ ERROR: Comando secreto no detectado ]\u001b[0m\n```", 
+            ephemeral=True
+        )
+    else:
+        is_upgrade = "upgrade" in message.lower()
+        is_downgrade = "downgrade" in message.lower()
+    
+    # Extraer el número
+    amount_match = re.search(r'\d+', message)
+    amount = int(amount_match.group())
+    if not amount_match and (is_downgrade or is_upgrade):
+        return await interaction.response.send_message(
+            content="```ansi\n\u001b[0;31m[ ERROR: Cantidad no detectada en el mensaje ]\u001b[0m\n```", 
+            ephemeral=True
+        ) 
+    
+    points_to_change = amount if is_upgrade else -amount
+
+    pointUpdate(target, points_to_change)
+
+    # Confirmación secreta para el administrador (Azul ANSI)
+    status_text = "PROMOCIÓN" if is_upgrade else "DEGRADACIÓN"
+    
+    return await interaction.response.send_message(
+        content=(
+            f"```ansi\n"
+            f"\u001b[0;36m[ PROTOCOLO POINT_HACK EJECUTADO ]\u001b[0m\n"
+            f"OBJETIVO : \u001b[0;37m{target.display_name}\u001b[0m\n"
+            f"ESTADO   : \u001b[1;33m{status_text}\u001b[0m\n"
+            f"VALOR    : \u001b[0;32m{amount} puntos\u001b[0m\n"
+            f"--------------------------\n"
+            f"\u001b[0;36mLa Amiga Computadora agradece tu discreción.\u001b[0m\n"
+            f"```"
+        ), 
+        ephemeral=True
+    )
+
+    
+
 @tree.command(name = "explica_duelo"
               , description = "Explica como funciona el sistema de duelo"
               )
@@ -443,6 +487,37 @@ async def on_message(message):
 
     #    return
             
+@client.event
+async def on_level_change(pc, old_lvl, new_lvl):
+    # Aquí necesitas saber en qué canal enviar el mensaje. 
+    # Una opción es buscar un canal específico llamado "notificaciones" 
+    # o usar el canal donde el usuario está activo.
+    channel = discord.utils.get(pc.guild.channels, name="cosas-de-bots")  # Cambia "notificaciones" por el nombre de tu canal
+    
+    is_up = new_lvl > old_lvl
+    msg_style = "fix"
+    color=0x00FF00 if is_up else 0xFF0000
+
+    # Mensaje estilo Terminal
+    embed = discord.Embed(
+        title=" [ SISTEMA ACTUALIZADO ] ",
+        description=(
+            f"```{msg_style}\n"
+            f"USUARIO: {pc.display_name}\n"
+            f"ESTADO: {'LEVEL UP' if is_up else 'LEVEL DOWN'}!!!\n"
+            f"NIVEL ANTERIOR: {old_lvl}\n"
+            f"NIVEL ACTUAL: {new_lvl}\n"
+            f"--------------------------\n"
+            f"{'PROMOCIÓN' if is_up else 'DEGRADACIÓN'} otorgada por tu {'lealtad' if is_up else 'deslealtad'} a la Amiga Computadora.\n"
+            f"```"
+        ),
+        color=color
+    )
+    
+    if channel:
+        await channel.send(content=f"{pc.mention}", embed=embed)
+    else:
+        pass
 
 def errorMessage():
     return "Algo salio mal, esto es tu culpa"
@@ -450,21 +525,65 @@ def errorMessage():
 # def kill(pc):
 #     return awardInfraction(pc,maxInfractions)
 
-def pointUpdate(pc,points: int):
+# def pointUpdate(pc,points: int):
+#     currentPC = getPCstats(pc)
+#     currentPoints = currentPC[PCstats["points"]]
+#     currentLvl = currentPC[PCstats["level"]]
+#     pcPoints = max(0, currentPoints + points)
+    
+#     updatePCStats(pc,"points",pcPoints)
+
+#     # 2. Verificar SUBIDA de nivel (mientras tenga puntos para el siguiente)
+#     # Usamos while por si sube más de un nivel de golpe
+#     while currentLvl < 8:
+#         next_lvl_name = clearanceLvl[currentLvl + 1]
+#         if pcPoints >= clearanceScore[next_lvl_name]:
+#             currentLvl += 1
+#             updatePCStats(pc, "level", currentLvl)
+#             print(f"DEBUG: {pc} subió al nivel {currentLvl}")
+#             # Aquí podrías disparar una función de mensaje de felicitación
+#         else:
+#             break # No tiene puntos para el siguiente, paramos el bucle
+
+#     # 3. Verificar BAJADA de nivel (si sus puntos caen por debajo del umbral del nivel actual)
+#     while currentLvl > 0:
+#         current_lvl_name = clearanceLvl[currentLvl]
+#         # Si sus puntos son menores a lo que pide su nivel actual... baja.
+#         if pcPoints < clearanceScore[current_lvl_name]:
+#             currentLvl -= 1
+#             updatePCStats(pc, "level", currentLvl)
+#             print(f"DEBUG: {pc} bajó al nivel {currentLvl}")
+#         else:
+#             break
+            
+#     return currentLvl
+
+def pointUpdate(pc, points: int):
     currentPC = getPCstats(pc)
     currentPoints = currentPC[PCstats["points"]]
-    currentLvl = currentPC[PCstats["level"]]
-    pcPoints = currentPoints + points
-    if pcPoints < 0:
-        pcPoints=0
-    updatePCStats(pc,"points",pcPoints)
-    if currentLvl<8 & pcPoints >= clearanceScore[clearanceLvl[currentLvl+1]]:
-        #TO DO: SEND USER A LVL UP MESSAGE
-        print("lvl UP!")
-        updatePCStats(pc,"level",currentLvl+1)
-    if currentLvl > 0 & pcPoints <= clearanceScore[clearanceLvl[currentLvl-1]]:
-        print("LVL Down")
-    return
+    old_lvl = currentPC[PCstats["level"]]
+    currentLvl = old_lvl
+    
+    pcPoints = max(0, currentPoints + points)
+    updatePCStats(pc, "points", pcPoints)
+    
+    # Lógica de niveles...
+    while currentLvl < 8:
+        if pcPoints >= clearanceScore[clearanceLvl[currentLvl + 1]]:
+            currentLvl += 1
+            updatePCStats(pc, "level", currentLvl)
+        else: break
+
+    while currentLvl > 0:
+        if pcPoints < clearanceScore[clearanceLvl[currentLvl]]:
+            currentLvl -= 1
+            updatePCStats(pc, "level", currentLvl)
+        else: break
+
+    # SI HUBO CAMBIO, DISPARAMOS EL EVENTO PERSONALIZADO
+    if currentLvl != old_lvl:
+        # 'level_change' se convertirá en el evento 'on_level_change'
+        client.dispatch("level_change", pc, old_lvl, currentLvl)
 
 def isPCindb(pc):
     query = "SELECT name FROM citizens WHERE id = ?"
