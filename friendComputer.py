@@ -507,6 +507,7 @@ async def on_level_change(pc, old_lvl, new_lvl):
             f"ESTADO: {'LEVEL UP' if is_up else 'LEVEL DOWN'}!!!\n"
             f"NIVEL ANTERIOR: {old_lvl}\n"
             f"NIVEL ACTUAL: {new_lvl}\n"
+            f"PUNTOS: {getPCstats(pc)[PCstats['points']]}\n"
             f"--------------------------\n"
             f"{'PROMOCIÓN' if is_up else 'DEGRADACIÓN'} otorgada por tu {'lealtad' if is_up else 'deslealtad'} a la Amiga Computadora.\n"
             f"```"
@@ -522,41 +523,6 @@ async def on_level_change(pc, old_lvl, new_lvl):
 def errorMessage():
     return "Algo salio mal, esto es tu culpa"
 
-# def kill(pc):
-#     return awardInfraction(pc,maxInfractions)
-
-# def pointUpdate(pc,points: int):
-#     currentPC = getPCstats(pc)
-#     currentPoints = currentPC[PCstats["points"]]
-#     currentLvl = currentPC[PCstats["level"]]
-#     pcPoints = max(0, currentPoints + points)
-    
-#     updatePCStats(pc,"points",pcPoints)
-
-#     # 2. Verificar SUBIDA de nivel (mientras tenga puntos para el siguiente)
-#     # Usamos while por si sube más de un nivel de golpe
-#     while currentLvl < 8:
-#         next_lvl_name = clearanceLvl[currentLvl + 1]
-#         if pcPoints >= clearanceScore[next_lvl_name]:
-#             currentLvl += 1
-#             updatePCStats(pc, "level", currentLvl)
-#             print(f"DEBUG: {pc} subió al nivel {currentLvl}")
-#             # Aquí podrías disparar una función de mensaje de felicitación
-#         else:
-#             break # No tiene puntos para el siguiente, paramos el bucle
-
-#     # 3. Verificar BAJADA de nivel (si sus puntos caen por debajo del umbral del nivel actual)
-#     while currentLvl > 0:
-#         current_lvl_name = clearanceLvl[currentLvl]
-#         # Si sus puntos son menores a lo que pide su nivel actual... baja.
-#         if pcPoints < clearanceScore[current_lvl_name]:
-#             currentLvl -= 1
-#             updatePCStats(pc, "level", currentLvl)
-#             print(f"DEBUG: {pc} bajó al nivel {currentLvl}")
-#         else:
-#             break
-            
-#     return currentLvl
 
 def pointUpdate(pc, points: int):
     currentPC = getPCstats(pc)
