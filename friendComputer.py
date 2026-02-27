@@ -223,7 +223,7 @@ async def multipass(interaction,message: str):
               , description = "Explica como funciona el sistema de duelo"
               )
 async def explica_duelo(interaction):
-    await interaction.response.send_message(duel.attackExplanation())
+    await interaction.response.send_message(duel.attackExplanation(),file=discord.File("./images/triangle.jpg"))
     return
 
 #-----------------------------------------------------------------------------------------------
@@ -369,6 +369,8 @@ async def on_message(message):
         else:
             await message.author.send(f"❌ Arma no válida. Elige una de: {', '.join(duel.attacks.keys())}")
         await message.delete()
+        msg = await message.channel.fetch_message(message.reference.message_id)
+        await msg.delete()
         return    
     # --------------------------------------------------------------------------------
     
